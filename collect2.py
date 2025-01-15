@@ -32,6 +32,7 @@ def capture_and_save_frames(pipeline):
     os.makedirs(root_dir, exist_ok=True)
     os.makedirs(folder_name, exist_ok=True)
     os.makedirs(f'{folder_name}/rgb_image', exist_ok=True)
+    os.makedirs(f'{folder_name}/output', exist_ok=True)
     os.makedirs(f'{folder_name}/depth_image', exist_ok=True)
     
     try:
@@ -162,7 +163,7 @@ def capture_frames_to_send():
 # import cv2
 # import numpy as np
 
-def plot_points(image_path, points_list, radius=5):
+def plot_points_1(image_path, points_list, radius=5):
     """
     Plot points on an image using cv2
     
@@ -639,7 +640,7 @@ def main():
     ]
 
 
-    plot_points(image_path, points_data)
+    plot_points_1(image_path, points_data)
 
 # if __name__ == "__main__":
 #     main()

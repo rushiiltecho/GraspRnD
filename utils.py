@@ -177,7 +177,7 @@ def deproject_pixel_to_point(depth_array, pixel_coords, intrinsics):
 
 def get_intrinsics(metadata_filepath: str):
     config = load_config()
-    camera_intrinsics = config['camera_intrinsics']
+    camera_intrinsics = config['camera_config']['camera_intrinsics']
     color_intrinsics = camera_intrinsics['color_intrinsics']
     depth_intrinsics = camera_intrinsics['depth_intrinsics']
     return color_intrinsics, depth_intrinsics
@@ -236,14 +236,6 @@ def get_pixel_3d_coordinates(recording_dir, time_seconds, pixel_x, pixel_y):
             
             color_intrinsics = rs.intrinsics()
             d_intr = intrinsics_dict['color_intrinsics']
-            color_intrinsics.width = h5_file.attrs['width']
-            color_intrinsics.height = h5_file.attrs['height']
-            color_intrinsics.ppx = d_intr['ppx']
-            color_intrinsics.ppy = d_intr['ppy']
-            color_intrinsics.fx = d_intr['fx']
-            color_intrinsics.fy = d_intr['fy']
-            color_intrinsics.model = rs.distortion.inverse_brown_conrady
-            color_intrinsics.coeffs = d_intr['coeffs']
             
             # Ensure pixel coordinates are within bounds
             pixel_x = min(max(0, float(pixel_x)), color_intrinsics.width - 1)
@@ -265,6 +257,39 @@ def get_pixel_3d_coordinates(recording_dir, time_seconds, pixel_x, pixel_y):
         print(f"Error in get_pixel_3d_coordinates: {e}")
         return None, time_seconds
 
+
+def get_real_world_coordinates(image_dir, pixel_x, pixel_y):
+    """
+    Get the real world coordinates (X, Y, Z) of a specific pixel in a depth image.
+
+    Args:
+        image_dir (str): Path to the directory containing the depth image.
+        pixel_x (int): X coordinate of the pixel.
+        pixel_y (int): Y coordinate of the pixel.
+
+    Returns:
+        np.array: Real world coordinates (X, Y, Z) in meters.
+    """
+    # Load the depth image
+    # depth_image_path = os.path.join(f'{image_dir}/depth_image', "depth_image.npy")
+    depth_image_path = f'{image_dir}/depth_image/image_0.npy'
+    depth_image = np.load(depth_image_path)
+
+    # Load the camera intrinsics
+    intrinsics = rs.intrinsics()
+    color_intrinsics, depth_intrinsics = get_intrinsics("config/config.yaml")
+    intrinsics.width = 640
+    intrinsics.height = 480
+    intrinsics.ppx = depth_intrinsics['ppx']
+    intrinsics.ppy = depth_intrinsics['ppy']
+    intrinsics.fx = depth_intrinsics['fx']
+    intrinsics.fy = depth_intrinsics['fy']
+    intrinsics.model = rs.distortion.inverse_brown_conrady
+    intrinsics.coeffs = [0, 0, 0, 0, 0]
+
+    # Deproject the pixel to 3D point
+    point_3d = deproject_pixel_to_point(depth_image, (pixel_x, pixel_y), intrinsics)
+    return point_3d
 
 def _transform_coordinates(point_xyz, calib_matrix_x=calib_matrix_x, calib_matrix_y=calib_matrix_y):
     """
@@ -310,14 +335,13 @@ def parse_to_json(response):
     return json_content
     
 
-def transform_coordinates(point):
-    """Transform coordinates using X and Y matrices."""
+def transform_coordinates(x, y, z):
+    """Transforms coordinates from input space to cobot base."""
     B = np.eye(4)
-    B[:3, 3] = point
+    B[:3, 3] = [x / 1000, y / 1000, z / 1000]  # Convert to meters
     A = calib_matrix_y @ B @ np.linalg.inv(calib_matrix_x)
-    transformed_point = A[:3, 3] * 1000
-    return transformed_point/1000
-
+    transformed_x, transformed_y, transformed_z = A[:3, 3] * 1000  # Convert back to mm
+    return transformed_x, transformed_y, transformed_z
 
 def parse_list_boxes(text:str):
   result = []
