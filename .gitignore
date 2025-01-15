@@ -6,3 +6,6 @@ captured_frames*/
 *.pt
 *.lock
 *.jpg
+*_api_key*.py
+*.pkl
+*.keras

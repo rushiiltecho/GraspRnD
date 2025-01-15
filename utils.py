@@ -341,7 +341,7 @@ def transform_coordinates(x, y, z):
     B[:3, 3] = [x / 1000, y / 1000, z / 1000]  # Convert to meters
     A = calib_matrix_y @ B @ np.linalg.inv(calib_matrix_x)
     transformed_x, transformed_y, transformed_z = A[:3, 3] * 1000  # Convert back to mm
-    return transformed_x, transformed_y, transformed_z
+    return float(transformed_x), float(transformed_y), float(transformed_z)
 
 def parse_list_boxes(text:str):
   result = []
