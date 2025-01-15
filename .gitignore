@@ -1,0 +1,8 @@
+*.pyc
+__pycache__
+dist
+captured_frames*/
+*.txt
+*.pt
+*.lock
+*.jpg
