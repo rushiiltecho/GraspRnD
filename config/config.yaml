@@ -1,0 +1,38 @@
+camera_config: {
+    "fps": 30,
+    "resolution": {
+        "width": 640,
+        "height": 480
+    },
+    "camera_intrinsics": {
+        "color_intrinsics": {
+            "fx": 611.0845947265625,
+            "fy": 609.7639770507812,
+            "ppx": 329.1317443847656,
+            "ppy": 240.29669189453125,
+            "model": "distortion.inverse_brown_conrady",
+            "coeffs": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "depth_intrinsics": {
+            "fx": 383.6670837402344,
+            "fy": 383.6670837402344,
+            "ppx": 317.33392333984375,
+            "ppy": 239.83273315429688,
+            "model": "distortion.brown_conrady",
+            "coeffs": [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        "depth_scale": 0.0010000000474974513
+    },
+}

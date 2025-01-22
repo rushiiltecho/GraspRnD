@@ -1,0 +1,12 @@
+*.pyc
+__pycache__
+dist
+captured_frames*/
+*.txt
+*.pt
+*.lock
+*.jpg
+*_api_key*.py
+*.pkl
+*.keras
+api_key*.py

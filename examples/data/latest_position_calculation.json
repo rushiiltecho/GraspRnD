@@ -1,0 +1,22 @@
+{
+    "timestamp": "20250120_181629",
+    "object_center_xyz": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "relative_pose": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "final_position_xyz": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "final_position_pixel": {
+        "x": 0,
+        "y": 0
+    }
+}
